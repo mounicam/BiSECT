@@ -27,5 +27,5 @@ You can calculate the metrics using the command below:
 Here, ``<reference file>`` assumes that the references are seperated by a tab. 
 
 Note that we do not include BERTScore as it is available [here](https://github.com/Tiiiger/bert_score). 
-We used bert-base-uncased model to calculate the semantic similarity between the output and the reference.
+We used ``bert-base-uncased`` model to calculate the semantic similarity between the output and the reference.
 
