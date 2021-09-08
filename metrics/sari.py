@@ -4,24 +4,20 @@ import glob
 import numpy as np
 from argparse import ArgumentParser
 
-def isSubSequence(str1,str2): 
+
+"""
+Based on code by Wei Xu
+#https://github.com/cocoxu/simplification
+"""
+
+def is_subsequence(str1,str2):
     m = len(str1) 
-    n = len(str2) 
-      
-    j = 0    # Index of str1 
-    i = 0    # Index of str2 
-      
-    # Traverse both str1 and str2 
-    # Compare current character of str2 with  
-    # first unmatched character of str1 
-    # If matched, then move ahead in str1 
-      
+    n = len(str2)
+    i, j = 0, 0
     while j<m and i<n: 
         if str1[j] == str2[i]:     
             j = j+1    
         i = i + 1
-          
-    # If all characters of str1 matched, then j is equal to m 
     return j==m 
 
 def SARIngram(sgrams, cgrams, rgramslist, numref, complex):
@@ -89,21 +85,12 @@ def SARIngram(sgrams, cgrams, rgramslist, numref, complex):
 
     addgramcountergood_new = set()
     for gram in addgramcountergood:
-        if any([tok not in sgrams_set for tok in gram.split()]) or not isSubSequence(gram.split(), complex.split()):
+        if any([tok not in sgrams_set for tok in gram.split()]) or not is_subsequence(gram.split(), complex.split()):
             addgramcountergood_new.add(gram)
     addgramcountergood = addgramcountergood_new
 
-    #if len(addgramcountergood) > 0:
-    #    print(addgramcountergood)
-
-    # if len(addgramcountergood) > 0:
-    #     print(addgramcounter)
-    #     print(addgramcountergood)
-    #     print(addgramcounterall)
-    #     print("=====")
-
     addtmpscore = 0
-    for addgram in addgramcountergood:
+    for _ in addgramcountergood:
         addtmpscore += 1
 
     addscore_precision = 0
@@ -120,7 +107,6 @@ def SARIngram(sgrams, cgrams, rgramslist, numref, complex):
 
 
 def SARIsent(ssent, csent, rsents):
-    #print(ssent)
     numref = len(rsents)
 
     s1grams = ssent.lower().split(" ")
@@ -196,9 +182,6 @@ def SARIsent(ssent, csent, rsents):
     avgaddscore = sum([add1score, add2score, add3score, add4score]) / 4
     finalpscore = (avgkeepscore + avgdelpscore + avgaddscore) / 3
     finalfscore = (avgkeepscore + avgdelfscore + avgaddscore) / 3
-
-    # print("====")
-
     return avgkeepscore, (avgdelpscore, avgdelrscore, avgdelfscore), avgaddscore, (finalpscore, finalfscore)
 
 
