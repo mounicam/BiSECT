@@ -1,3 +1,6 @@
 __pycache__
 pretrained
-metrics/simpleppdb_xl.tsv
+metrics/ppdb_xl.tsv
+our_model/stanford-corenlp-4.2.0
+our_model/cased_L-12_H-768_A-12
+resources
