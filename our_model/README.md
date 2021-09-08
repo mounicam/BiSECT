@@ -1,111 +1,82 @@
-# Introduction <img src="fairseq_logo.png" width="50"> 
+# Introduction
 
-Fairseq(-py) is a sequence modeling toolkit that allows researchers and
-developers to train custom models for translation, summarization, language
-modeling and other text generation tasks. It provides reference implementations
-of various sequence-to-sequence models, including:
-- **Convolutional Neural Networks (CNN)**
-  - [Dauphin et al. (2017): Language Modeling with Gated Convolutional Networks](examples/language_model/conv_lm/README.md)
-  - [Gehring et al. (2017): Convolutional Sequence to Sequence Learning](examples/conv_seq2seq/README.md)
-  - [Edunov et al. (2018): Classical Structured Prediction Losses for Sequence to Sequence Learning](https://github.com/pytorch/fairseq/tree/classic_seqlevel)
-  - [Fan et al. (2018): Hierarchical Neural Story Generation](examples/stories/README.md)
-  - **_New_** [wav2vec: Unsupervised Pre-training for Speech Recognition (Schneider et al., 2019)](examples/wav2vec/README.md)
-- **LightConv and DynamicConv models**
-  - **_New_** [Wu et al. (2019): Pay Less Attention with Lightweight and Dynamic Convolutions](examples/pay_less_attention_paper/README.md)
-- **Long Short-Term Memory (LSTM) networks**
-  - [Luong et al. (2015): Effective Approaches to Attention-based Neural Machine Translation](https://arxiv.org/abs/1508.04025)
-  - [Wiseman and Rush (2016): Sequence-to-Sequence Learning as Beam-Search Optimization](https://arxiv.org/abs/1606.02960)
-- **Transformer (self-attention) networks**
-  - [Vaswani et al. (2017): Attention Is All You Need](https://arxiv.org/abs/1706.03762)
-  - [Ott et al. (2018): Scaling Neural Machine Translation](examples/scaling_nmt/README.md)
-  - [Edunov et al. (2018): Understanding Back-Translation at Scale](examples/backtranslation/README.md)
-  - **_New_** [Baevski and Auli (2018): Adaptive Input Representations for Neural Language Modeling](examples/language_model/transformer_lm/README.md)
-  - **_New_** [Shen et al. (2019): Mixture Models for Diverse Machine Translation: Tricks of the Trade](examples/translation_moe/README.md)
+This directory consists of the code for our hybrid sentence splitter. 
 
-Fairseq features:
-- multi-GPU (distributed) training on one machine or across multiple machines
-- fast generation on both CPU and GPU with multiple search algorithms implemented:
-  - beam search
-  - Diverse Beam Search ([Vijayakumar et al., 2016](https://arxiv.org/abs/1610.02424))
-  - sampling (unconstrained and top-k)
-- large mini-batch training even on a single GPU via delayed updates
-- mixed precision training (trains faster with less GPU memory on [NVIDIA tensor cores](https://developer.nvidia.com/tensor-cores))
-- extensible: easily register new models, criterions, tasks, optimizers and learning rate schedulers
-
-We also provide [pre-trained models](#pre-trained-models-and-examples) for several benchmark
-translation and language modeling datasets.
-
-![Model](fairseq.gif)
 
 # Requirements and Installation
 
-* [PyTorch](http://pytorch.org/) version >= 1.0.0
-* Python version >= 3.5
-* For training new models, you'll also need an NVIDIA GPU and [NCCL](https://github.com/NVIDIA/nccl)
+The code is based on [fairseq](https://github.com/pytorch/fairseq) toolkit. It requires PyTorch version >= 1.0.0 and 
+Python version >= 3.5. 
 
-Please follow the instructions here to install PyTorch: https://github.com/pytorch/pytorch#installation.
+If you do not have PyTorch, please follow the instructions here to install: https://github.com/pytorch/pytorch#installation.
 
-If you use Docker make sure to increase the shared memory size either with
-`--ipc=host` or `--shm-size` as command line options to `nvidia-docker run`.
-
-After PyTorch is installed, you can install fairseq with `pip`:
+And then install fairseq from the source code shared in the repository.
 ```
-pip install fairseq
-```
-
-**Installing from source**
-
-To install fairseq from source and develop locally:
-```
-git clone https://github.com/pytorch/fairseq
-cd fairseq
 pip install --editable .
 ```
 
-**Improved training speed**
+# Pre-trained models
 
-Training speed can be further improved by installing NVIDIA's
-[apex](https://github.com/NVIDIA/apex) library with the `--cuda_ext` option.
-fairseq will automatically switch to the faster modules provided by apex.
+1. You need to preprocess the data using the ``preprocess.sh`` script. 
 
-# Getting Started
+First, the script classifies each sentence pair based on split type. Then, it performs BERT Tokenization and finally creates a binarized fairseq dataset.
+We use ``bert-base-cased`` tokenization for our models.
 
-The [full documentation](https://fairseq.readthedocs.io/) contains instructions
-for getting started, training new models and extending fairseq with new model
-types and tasks.
+Classification of sentence pair requires Stanford CoreNLP jar files. Please download [this folder](https://drive.google.com/drive/u/0/folders/1-Dz1eePlZSx-SApNqTAaSGOmgDdAVjHn) into the current directory.
 
-# Pre-trained models and examples
+```
+sh preprocess.sh <raw data directory>  <binarized data directory>
 
-We provide pre-trained models and pre-processed, binarized test sets for several tasks listed below,
-as well as example training and evaluation commands.
+# The script assumes that the raw data has the following format
+# <directory>/
+#   |-- train.src
+#   |-- train.dst
+#   |-- test.src
+#   |-- test.dst
+#   |-- valid.src
+#   |-- valid.dst
+# .src files contain complex sentences and .dst files contain split sentences.
+```
 
-- [Translation](examples/translation/README.md): convolutional and transformer models are available
-- [Language Modeling](examples/language_model/README.md): convolutional models are available
+2. Download the checkpoints from [here](https://drive.google.com/drive/u/0/folders/1cI7jK7sq3flLarcTe9PXVRXZqcwuDeSz). You can perform generation using the following command.
+ 
+```
+sh generate.sh <binarized data directory> <checkpoint path> <output file name> <src file path>
+```
 
-We also have more detailed READMEs to reproduce results from specific papers:
-- [Schneider et al. (2019): wav2vec: Unsupervised Pre-training for Speech Recognition](examples/wav2vec/README.md)
-- [Shen et al. (2019) Mixture Models for Diverse Machine Translation: Tricks of the Trade](examples/translation_moe/README.md)
-- [Wu et al. (2019): Pay Less Attention with Lightweight and Dynamic Convolutions](examples/pay_less_attention_paper/README.md)
-- [Edunov et al. (2018): Understanding Back-Translation at Scale](examples/backtranslation/README.md)
-- [Edunov et al. (2018): Classical Structured Prediction Losses for Sequence to Sequence Learning](https://github.com/pytorch/fairseq/tree/classic_seqlevel)
-- [Fan et al. (2018): Hierarchical Neural Story Generation](examples/stories/README.md)
-- [Ott et al. (2018): Scaling Neural Machine Translation](examples/scaling_nmt/README.md)
-- [Gehring et al. (2017): Convolutional Sequence to Sequence Learning](examples/conv_seq2seq/README.md)
-- [Dauphin et al. (2017): Language Modeling with Gated Convolutional Networks](examples/language_model/conv_lm/README.md)
 
-# Join the fairseq community
+# Training 
 
-* Facebook page: https://www.facebook.com/groups/fairseq.users
-* Google group: https://groups.google.com/forum/#!forum/fairseq-users
+1. Follow the step 1 described in the above section for Transformer.
 
-# License
-fairseq(-py) is BSD-licensed.
-The license applies to the pre-trained models as well.
-We also provide an additional patent grant.
+
+2. Download the BERT-base checkpoint from [here](https://storage.googleapis.com/bert_models/2018_10_18/cased_L-12_H-768_A-12.zip) 
+and unzip the folder.  Then, train using the following command:
+
+```
+CUDA_VISIBLE_DEVICES=<GPU1,GPU2...> python3  train.py <binarized data path from previous step> --save-dir <checkpoint directory>  \
+    --lr 0.0001 --optimizer adam  -a bert_rand --max-update 100000 --user-dir my_model --batch-size 32 --fp16 \
+    --lr-scheduler inverse_sqrt --warmup-updates 40000 --max-source-positions 512 --max-target-positions 512 \
+    --bert-path cased_L-12_H-768_A-12/bert_model.ckpt
+```
+
+All the model parameters are specified in ``my_model/__init__.py`` file.
+
+3. Follow the step 2 described in the previous section.  You can generate using the best checkpoint according to the cross-entropy loss, i.e. ``checkpoint_best.pt`` in the specified checkpoint directory. Alternatively, you can also choose the best checkpoint according to the SARI score on the validation dataset.
 
 # Citation
 
-Please cite as:
+If you use any of these resources, please cite fairseq and our paper:
+
+```bibtex
+@inproceedings{bisect2021,
+  title={BiSECT: Learning to Split and Rephrase Sentences with Bitexts},
+  author={Kim, Joongwon and Maddela, Mounica and Kriz, Reno Kriz and Xu, Wei and Callison-Burch, Chris},
+  booktitle={Proceedings of the Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  year={2021}
+}
+```
+
 
 ```bibtex
 @inproceedings{ott2019fairseq,
