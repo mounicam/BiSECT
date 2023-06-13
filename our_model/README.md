@@ -17,33 +17,13 @@ pip install --editable .
 
 # Pre-trained models
 
-1. You need to preprocess the data using the ``preprocess.sh`` script. 
-
-First, the script classifies each sentence pair based on split type. Then, it performs BERT Tokenization and finally creates a binarized fairseq dataset.
-We use ``bert-base-cased`` tokenization for our models.
-
-Classification of sentence pair requires Stanford CoreNLP jar files. Please download [this folder](https://drive.google.com/drive/u/0/folders/1-Dz1eePlZSx-SApNqTAaSGOmgDdAVjHn) into the current directory.
-
-```
-sh preprocess.sh <raw data directory>  <binarized data directory>
-
-# The script assumes that the raw data has the following format
-# <directory>/
-#   |-- train.src
-#   |-- train.dst
-#   |-- test.src
-#   |-- test.dst
-#   |-- valid.src
-#   |-- valid.dst
-# .src files contain complex sentences and .dst files contain split sentences.
-```
-
-2. Download the checkpoints from [here](https://drive.google.com/drive/u/0/folders/1cI7jK7sq3flLarcTe9PXVRXZqcwuDeSz). You can perform generation using the following command.
+You can perform generation with one of models using the following command.
  
 ```
-sh generate.sh <binarized data directory> <checkpoint path> <output file name> <src file path>
+sh generate.sh <input file> <output file> <checkpoint path>
 ```
 
+Download the checkpoints from [here](https://drive.google.com/drive/u/0/folders/1cI7jK7sq3flLarcTe9PXVRXZqcwuDeSz).
 
 # Training 
 
