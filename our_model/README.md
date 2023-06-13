@@ -17,13 +17,13 @@ pip install --editable .
 
 # Pre-trained models
 
-You can perform generation with one of models using the following command.
+You can perform generation with one of our proposed models using the following command. Download the checkpoints from [here](https://drive.google.com/drive/u/0/folders/1cI7jK7sq3flLarcTe9PXVRXZqcwuDeSz). We recommend using ```ourmodel_bisect.pt``` checkpoint.
+
  
 ```
 sh generate.sh <input file> <output file> <checkpoint path>
 ```
 
-Download the checkpoints from [here](https://drive.google.com/drive/u/0/folders/1cI7jK7sq3flLarcTe9PXVRXZqcwuDeSz).
 
 # Training 
 
