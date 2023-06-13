@@ -43,8 +43,8 @@ def transform(s, src):
 
     snew = snew.replace("'''", "''")
     snew = snew.replace('"', "''")
-    snew = snew.replace('- LRB -', " -LRB-")
-    snew = snew.replace('- RRB -', " -RRB-")
+    snew = snew.replace('- LRB -', " ( ")
+    snew = snew.replace('- RRB -', " ) ")
     return snew
 
 

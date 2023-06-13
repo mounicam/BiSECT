@@ -69,10 +69,15 @@ def load_langpair_dataset(
 
     type_labels = []
     copy_labels = []
-    for line in open(data_path + "/" + split + ".aner.labels"):
-        line = [int(token) for token in line.strip().split()]
-        type_labels.append(line[0])
-        copy_labels.append(line[1:])
+    path = data_path + "/" + split + ".aner.labels"
+    if os.path.isfile(path):
+        for line in open(path):
+            line = [int(token) for token in line.strip().split()]
+            type_labels.append(line[0])
+            copy_labels.append(line[1:])
+    else:
+        type_labels = [-1] * len(src_dataset)
+        copy_labels = [[] for _ in range(len(src_dataset))]
 
     return LanguagePairDataset(
         src_dataset, src_dataset.sizes, src_dict,
